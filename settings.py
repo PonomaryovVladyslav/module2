@@ -61,3 +61,9 @@ BASIC_OPTION_TEXTS = {
     'attacks': '----Attack----',
     'mode': '----Mode----'
 }
+
+
+# Score IO settings
+
+SCORE_FILENAME = 'scores.txt'
+MAX_RECORDS_NUMBER = 5

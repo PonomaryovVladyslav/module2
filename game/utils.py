@@ -20,7 +20,8 @@ def print_input_help(key: str) -> str:
             print("Incorrect menu option")
             raise IncorrectMenuOptionError
 
-def print_menu(menu: dict[str, str], key:str) -> str:
+
+def print_menu(menu: dict[str, str], key: str) -> str:
     """
 
     :param menu: dict with current chosen menu
@@ -30,3 +31,8 @@ def print_menu(menu: dict[str, str], key:str) -> str:
     options = ''.join([f"{option}: {description}\n" for option, description in menu.items()])
     result = f"{BASIC_OPTION_TEXTS[key]}\n{INPUT_BASIC_TEXT}\n{options}"
     return result
+
+
+def generate_scores_title_row(biggest_name_size: int = 0):
+    name_column_size = 5 if biggest_name_size <= 4 else biggest_name_size
+    return f'{"NAME".ljust(name_column_size)}{"MODE".ljust(10)}SCORE\n'
