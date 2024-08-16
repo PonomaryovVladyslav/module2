@@ -1,7 +1,7 @@
 """ Constants and settings used in the project """
 
 # Player settings
-PLAYER_LIVES = 2
+PLAYER_HIT_POINTS = 2
 
 # Scores settings
 POINTS_FOR_FIGHT = 1

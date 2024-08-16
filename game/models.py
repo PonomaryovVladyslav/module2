@@ -9,12 +9,12 @@ from game.exceptions import (
     WhiteSpaceInputError,
     EmptyInputError,
     IncorrectAttackOptionError)
-from game.utils import print_input_help
+from game.utils import generate_input_help
 from game.validations import validate_input_attack, validate_name, validate_mode, validate_level
 from settings import (
     ALLOWED_ATTACKS,
     MODE_NORMAL,
-    PLAYER_LIVES,
+    PLAYER_HIT_POINTS,
     POINTS_FOR_FIGHT,
     POINTS_FOR_KILLING,
     HARD_MODE_MULTIPLIER
@@ -67,7 +67,7 @@ class Player:
         """
         self.score = 0
         self.input_name()
-        self.lives = PLAYER_LIVES
+        self.lives = PLAYER_HIT_POINTS
 
     def input_name(self) -> None:
         """
@@ -90,7 +90,7 @@ class Player:
         Asks for user attack input
         """
         while True:
-            attack_input = input(print_input_help("attacks"))
+            attack_input = input(generate_input_help("attacks"))
             try:
                 validate_input_attack(attack_input)
                 if attack_input == '0':

@@ -10,6 +10,7 @@ class PlayerRecord:
     score: int
 
     def __init__(self, name: str, mode: str, score: int):
+        validate_mode(mode)
         self.name = name
         self.mode = mode
         self.score = score
@@ -56,28 +57,16 @@ class GameRecord:
             player_record = PlayerRecord(name, mode, int(score))
             self.records.append(player_record)
 
-    def _sort_records(self):
-        """
-        Sort the records by score
-        """
-        self.records = sorted(self.records, reverse=True)
-
-    def _cut_records(self):
-        """
-        Cut records by max size of score table
-        """
-        self.records = self.records[:MAX_RECORDS_NUMBER]
-
     def _prepare_records_to_save(self):
         """
         Prepare the records to save
         """
-        self._sort_records()
-        self._cut_records()
+        records_to_save = sorted(self.records, reverse=True)
+        self.records = records_to_save[:MAX_RECORDS_NUMBER]
 
     @property
     def biggest_name_size(self):
-        return max([len(pr.name) for pr in self.records]) + 1
+        return max([len(pr.name) for pr in self.records]) + 1 if self.records else 0
 
 
 class ScoreHandler:

@@ -8,7 +8,7 @@ from game.exceptions import (
 )
 from game.models import Player, Enemy
 from game.scores import ScoreHandler, PlayerRecord
-from game.utils import print_input_help
+from game.utils import generate_input_help
 from game.validations import validate_fight_result, validate_input_menu, validate_input_mode
 from settings import MODES, ATTACK_PAIRS_OUTCOME, PLAY, SCORE, EXIT, WIN, LOSE, DRAW, MAIN_MENU_OPTIONS, SCORE_FILENAME
 
@@ -42,7 +42,7 @@ class Game:
         Input and return game mode
         """
         while True:
-            mode_input = input(print_input_help("mode"))
+            mode_input = input(generate_input_help("mode"))
             try:
                 validate_input_mode(mode_input)
             except IncorrectModeError:
@@ -71,27 +71,6 @@ class Game:
               f"\tScore: {self.player.score}."
               f"\tLevel: {self.enemy.level}"
               f"\tEnemy's lives: {self.enemy.lives}")
-
-    def start_game(self) -> None:
-        """
-        Start game method
-        """
-        self.new_enemy()
-        try:
-            while True:
-                self.print_status()
-                try:
-                    self._fight()
-                except EnemyDown:
-                    self.new_enemy()
-                    print("\nNew enemy comes.")
-        except GameOver:
-            print('You lose!')
-            player_record = PlayerRecord(self.player.name, self.mode, self.player.score)
-            self.score_handler.game_record.add_record(player_record)
-            self.score_handler.write()
-        finally:
-            self.print_status()
 
     def _fight(self) -> None:
         """
@@ -122,13 +101,35 @@ class Game:
         elif fight_result == DRAW:
             print("It's a draw!")
 
+    def start_game(self) -> None:
+        """
+        Start game method
+        """
+        self.new_enemy()
+        try:
+            while True:
+                self.print_status()
+                try:
+                    self._fight()
+                except EnemyDown:
+                    self.new_enemy()
+                    print("\nNew enemy comes.")
+        except GameOver:
+            print('You lose!')
+            player_record = PlayerRecord(self.player.name, self.mode, self.player.score)
+            self.score_handler.game_record.add_record(player_record)
+            self.score_handler.write()
+        finally:
+            self.print_status()
+
+
 
 def main_menu_input() -> str:
     """
     Menu user input
     """
     while True:
-        menu_choice = input(print_input_help("main_menu"))
+        menu_choice = input(generate_input_help("main_menu"))
         try:
             validate_input_menu(menu_choice)
         except IncorrectMenuOptionError:
