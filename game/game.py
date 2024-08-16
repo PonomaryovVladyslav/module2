@@ -117,6 +117,7 @@ class Game:
             player_record = PlayerRecord(self.player.name, self.mode, self.player.score)
             self.score_handler.game_record.add_record(player_record)
             self.score_handler.write()
+            raise QuitApp
         finally:
             self.print_status()
 
