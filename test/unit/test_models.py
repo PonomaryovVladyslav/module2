@@ -74,7 +74,7 @@ class TestPlayerCreation(unittest.TestCase):
 
 
 class TestPlayerAttack(unittest.TestCase):
-    @patch('game.models.print_input_help')
+    @patch('game.utils.generate_input_help')
     @patch('builtins.input')
     def test_player_attack_quit(self, mock_input, mock_input_generator):
         mock_input.side_effect = ['Vlad', '0']
@@ -83,7 +83,7 @@ class TestPlayerAttack(unittest.TestCase):
             player = Player()
             player.attack()
 
-    @patch('game.models.print_input_help')
+    @patch('game.utils.generate_input_help')
     @patch('builtins.input')
     def test_player_attack_incorrect(self, mock_input, mock_input_generator):
         mock_input.side_effect = ['Vlad', 'wrong', '1']
@@ -93,7 +93,7 @@ class TestPlayerAttack(unittest.TestCase):
             player.attack()
         self.assertEqual(mock_input.call_count, 3)
 
-    @patch('game.models.print_input_help')
+    @patch('game.utils.generate_input_help')
     @patch('builtins.input')
     def test_player_attack_correct(self, mock_input, mock_input_generator):
         mock_input.side_effect = ['Vlad', '1']

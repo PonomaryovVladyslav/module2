@@ -2,7 +2,7 @@ import unittest
 from contextlib import nullcontext as does_not_raise
 from unittest.mock import patch, Mock
 
-from game.exceptions import IncorrectFightResult, EnemyDown, GameOver
+from game.exceptions import IncorrectFightResult, EnemyDown, GameOver, QuitApp
 from game.game import Game
 from game.scores import PlayerRecord
 from settings import (
@@ -197,37 +197,40 @@ class TestStartGame(unittest.TestCase):
     @patch("game.models.Enemy.attack", side_effect=[STONE, STONE])
     @patch("game.models.Player.attack", side_effect=[SCISSORS, SCISSORS])
     def test_start_game_game_over_without_scores(self, mock_player_attack, mock_enemy_attack):
-        self.game.start_game()
-        self.assertEqual(self.game.player.lives, 0)
-        self.assertEqual(self.game.enemy.lives, 1)
-        self.assertEqual(self.game.player.score, 0)
-        player_record = PlayerRecord("Vlad", MODE_NORMAL, 0)
-        self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
-        self.game.score_handler.write.assert_called_once()
+        with self.assertRaises(QuitApp):
+            self.game.start_game()
+            self.assertEqual(self.game.player.lives, 0)
+            self.assertEqual(self.game.enemy.lives, 1)
+            self.assertEqual(self.game.player.score, 0)
+            player_record = PlayerRecord("Vlad", MODE_NORMAL, 0)
+            self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
+            self.game.score_handler.write.assert_called_once()
 
     @patch("game.models.Enemy.attack", side_effect=[STONE, STONE, STONE])
     @patch("game.models.Player.attack", side_effect=[PAPER, SCISSORS, SCISSORS])
     def test_start_game_kill_1_enemy(self, mock_player_attack, mock_enemy_attack):
-        self.game.start_game()
-        self.assertEqual(self.game.player.lives, 0)
-        self.assertEqual(self.game.enemy.lives, 2)
-        scores = POINTS_FOR_FIGHT + POINTS_FOR_KILLING
-        self.assertEqual(self.game.player.score, scores)
-        player_record = PlayerRecord("Vlad", MODE_NORMAL, scores)
-        self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
-        self.game.score_handler.write.assert_called_once()
+        with self.assertRaises(QuitApp):
+            self.game.start_game()
+            self.assertEqual(self.game.player.lives, 0)
+            self.assertEqual(self.game.enemy.lives, 2)
+            scores = POINTS_FOR_FIGHT + POINTS_FOR_KILLING
+            self.assertEqual(self.game.player.score, scores)
+            player_record = PlayerRecord("Vlad", MODE_NORMAL, scores)
+            self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
+            self.game.score_handler.write.assert_called_once()
 
     @patch("game.models.Enemy.attack", side_effect=[STONE, STONE, STONE, STONE, STONE])
     @patch("game.models.Player.attack", side_effect=[PAPER, PAPER, PAPER, SCISSORS, SCISSORS])
     def test_start_game_kill_2_enemies(self, mock_player_attack, mock_enemy_attack):
-        self.game.start_game()
-        self.assertEqual(self.game.player.lives, 0)
-        self.assertEqual(self.game.enemy.lives, 3)
-        scores = POINTS_FOR_FIGHT * 3 + POINTS_FOR_KILLING * 2
-        self.assertEqual(self.game.player.score, scores)
-        player_record = PlayerRecord("Vlad", MODE_NORMAL, scores)
-        self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
-        self.game.score_handler.write.assert_called_once()
+        with self.assertRaises(QuitApp):
+            self.game.start_game()
+            self.assertEqual(self.game.player.lives, 0)
+            self.assertEqual(self.game.enemy.lives, 3)
+            scores = POINTS_FOR_FIGHT * 3 + POINTS_FOR_KILLING * 2
+            self.assertEqual(self.game.player.score, scores)
+            player_record = PlayerRecord("Vlad", MODE_NORMAL, scores)
+            self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
+            self.game.score_handler.write.assert_called_once()
 
 
 class TestStartGameHardMode(unittest.TestCase):
@@ -239,34 +242,37 @@ class TestStartGameHardMode(unittest.TestCase):
     @patch("game.models.Enemy.attack", side_effect=[STONE, STONE])
     @patch("game.models.Player.attack", side_effect=[SCISSORS, SCISSORS])
     def test_start_game_game_over_without_scores(self, mock_player_attack, mock_enemy_attack):
-        self.game.start_game()
-        self.assertEqual(self.game.player.lives, 0)
-        self.assertEqual(self.game.enemy.lives, 1 * HARD_MODE_MULTIPLIER)
-        self.assertEqual(self.game.player.score, 0)
-        player_record = PlayerRecord("Vlad", MODE_HARD, 0)
-        self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
-        self.game.score_handler.write.assert_called_once()
+        with self.assertRaises(QuitApp):
+            self.game.start_game()
+            self.assertEqual(self.game.player.lives, 0)
+            self.assertEqual(self.game.enemy.lives, 1 * HARD_MODE_MULTIPLIER)
+            self.assertEqual(self.game.player.score, 0)
+            player_record = PlayerRecord("Vlad", MODE_HARD, 0)
+            self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
+            self.game.score_handler.write.assert_called_once()
 
     @patch("game.models.Enemy.attack", side_effect=[STONE, STONE, STONE, STONE])
     @patch("game.models.Player.attack", side_effect=[PAPER, PAPER, SCISSORS, SCISSORS])
     def test_start_game_kill_1_enemy(self, mock_player_attack, mock_enemy_attack):
-        self.game.start_game()
-        self.assertEqual(self.game.player.lives, 0)
-        self.assertEqual(self.game.enemy.lives, 2 * HARD_MODE_MULTIPLIER)
-        scores = (POINTS_FOR_FIGHT * 2 + POINTS_FOR_KILLING) * HARD_MODE_MULTIPLIER
-        self.assertEqual(self.game.player.score, scores)
-        player_record = PlayerRecord("Vlad", MODE_HARD, scores)
-        self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
-        self.game.score_handler.write.assert_called_once()
+        with self.assertRaises(QuitApp):
+            self.game.start_game()
+            self.assertEqual(self.game.player.lives, 0)
+            self.assertEqual(self.game.enemy.lives, 2 * HARD_MODE_MULTIPLIER)
+            scores = (POINTS_FOR_FIGHT * 2 + POINTS_FOR_KILLING) * HARD_MODE_MULTIPLIER
+            self.assertEqual(self.game.player.score, scores)
+            player_record = PlayerRecord("Vlad", MODE_HARD, scores)
+            self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
+            self.game.score_handler.write.assert_called_once()
 
     @patch("game.models.Enemy.attack", side_effect=[STONE, STONE, STONE, STONE, STONE, STONE, STONE, STONE])
     @patch("game.models.Player.attack", side_effect=[PAPER, PAPER, PAPER, PAPER, PAPER, PAPER, SCISSORS, SCISSORS])
     def test_start_game_kill_2_enemies(self, mock_player_attack, mock_enemy_attack):
-        self.game.start_game()
-        self.assertEqual(self.game.player.lives, 0)
-        self.assertEqual(self.game.enemy.lives, 3 * HARD_MODE_MULTIPLIER)
-        scores = (POINTS_FOR_FIGHT * 6 + POINTS_FOR_KILLING * 2) * HARD_MODE_MULTIPLIER
-        self.assertEqual(self.game.player.score, scores)
-        player_record = PlayerRecord("Vlad", MODE_HARD, scores)
-        self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
-        self.game.score_handler.write.assert_called_once()
+        with self.assertRaises(QuitApp):
+            self.game.start_game()
+            self.assertEqual(self.game.player.lives, 0)
+            self.assertEqual(self.game.enemy.lives, 3 * HARD_MODE_MULTIPLIER)
+            scores = (POINTS_FOR_FIGHT * 6 + POINTS_FOR_KILLING * 2) * HARD_MODE_MULTIPLIER
+            self.assertEqual(self.game.player.score, scores)
+            player_record = PlayerRecord("Vlad", MODE_HARD, scores)
+            self.game.score_handler.game_record.add_record.assert_called_once_with(player_record)
+            self.game.score_handler.write.assert_called_once()
