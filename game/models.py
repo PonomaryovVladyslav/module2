@@ -28,7 +28,7 @@ class Enemy:
     lives: int
     level: int
 
-    def __init__(self, mode: str, level: int):
+    def __init__(self, mode: str, level: int) -> None:
         """
         Initializes the enemy instance
         """
@@ -114,7 +114,7 @@ class Player:
         validate_mode(mode)
         self.score += POINTS_FOR_FIGHT if mode == MODE_NORMAL else POINTS_FOR_FIGHT * HARD_MODE_MULTIPLIER
 
-    def on_enemy_down(self, mode):
+    def on_enemy_down(self, mode) -> None:
         """
         Adds score on enemy down
         """

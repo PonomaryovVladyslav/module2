@@ -26,9 +26,7 @@ class Game:
     enemy: Enemy
     score_handler: ScoreHandler
 
-    # TODO: Add score handler
-
-    def __init__(self, score_handler: ScoreHandler):
+    def __init__(self, score_handler: ScoreHandler) -> None:
         """
         Initialize the game
         """
@@ -144,7 +142,6 @@ def main_menu() -> None:
     """
     menu_choice = main_menu_input()
     score_handler = ScoreHandler(SCORE_FILENAME)
-    # TODO: ADD SCORE HANDLER
     if menu_choice == PLAY:
         game = Game(score_handler)
         game.start_game()
