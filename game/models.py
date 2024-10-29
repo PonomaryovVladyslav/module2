@@ -66,10 +66,10 @@ class Player:
         Initializes the player instance
         """
         self.score = 0
-        self.input_name()
+        self._input_name()
         self.lives = PLAYER_HIT_POINTS
 
-    def input_name(self) -> None:
+    def _input_name(self) -> None:
         """
         Input and return player name
         """
